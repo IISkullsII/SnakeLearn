@@ -37,7 +37,11 @@ namespace _02_Scripts
 
         [SerializeField] private GameObject uiCanvas;
         private TextFadeController _textFadeController;
+        
+        private bool _gameStarted = false;
 
+        [SerializeField] private GameObject uiGameStartedCanvas;
+        
         private void Awake()
         {
             _textFadeController = uiCanvas.GetComponentInChildren<TextFadeController>();
@@ -61,10 +65,19 @@ namespace _02_Scripts
             {
                 SpawnNewFood();
             }
-
-            if (Input.GetKeyDown(KeyCode.Space) && _snakePlayerController.IsDead)
+            
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                ResetGame();
+                if (!_gameStarted)
+                {
+                    uiGameStartedCanvas.SetActive(false);
+                    _gameStarted = true;
+                    _snakePlayerController.ResetSnake();
+                }
+                if (_snakePlayerController.IsDead)
+                {
+                    ResetGame();
+                }
             }
         }
 

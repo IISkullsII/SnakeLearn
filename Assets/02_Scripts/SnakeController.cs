@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace _02_Scripts
@@ -37,8 +35,6 @@ namespace _02_Scripts
         private void Start()
         {
             _snakeBody = new SnakeBody(snakeBodyPart, gameObject.transform, snakeBodyStart);
-            
-            StartCoroutine(MoveSnake());
         }
     
     
@@ -92,6 +88,7 @@ namespace _02_Scripts
         {
             while (!_isDead)
             {
+
                 Vector3 transformPos = transform.position;
                 _snakeBody.MoveBodyParts(transformPos);
                 
