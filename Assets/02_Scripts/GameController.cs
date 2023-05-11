@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -25,6 +25,10 @@ namespace _02_Scripts
         
         [SerializeField] private float cellSize = 1f;
         public float CellSize => cellSize;
+        [SerializeField] private float offsetX = 0f;
+        public float OffsetX => offsetX;
+        [SerializeField] private float offsetY = 0f;
+        public float OffsetY => offsetY;
 
         [SerializeField] private float borderSize = .25f;
         [SerializeField] private Color borderColor = Color.white;
@@ -41,16 +45,28 @@ namespace _02_Scripts
         private bool _gameStarted = false;
 
         [SerializeField] private GameObject uiGameStartedCanvas;
-        
+
+        [SerializeField] private GameObject scoreText;
+        private TextMeshProUGUI _scoreTextMeshPro;
+        [SerializeField] private float baseScoreAtEat = 150f;
+        [SerializeField] private float timeScoreMin = 15F;
+        [SerializeField] private float timeScoreMax = 100f;
+        [SerializeField] private float timeMin = 10f; // In seconds
+        [SerializeField] private float timeMax = 1f; // In Seconds
+        private float _playerScore = 0;
+        private System.DateTime _timeSinceEat;
+
         private void Awake()
         {
             _textFadeController = uiCanvas.GetComponentInChildren<TextFadeController>();
+            _scoreTextMeshPro = scoreText.GetComponent<TextMeshProUGUI>();
         }
 
         private void Start()
         {
             _snakePlayerController = snakePlayer.GetComponent<SnakeController>();
             InitFoodList();
+            _playerScore = 0;
         }
 
         public void TriggerGameOver()
@@ -61,11 +77,6 @@ namespace _02_Scripts
         
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-                SpawnNewFood();
-            }
-            
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 if (!_gameStarted)
@@ -73,6 +84,9 @@ namespace _02_Scripts
                     uiGameStartedCanvas.SetActive(false);
                     _gameStarted = true;
                     _snakePlayerController.ResetSnake();
+                    _timeSinceEat = System.DateTime.UtcNow;
+                    _playerScore = 0;
+                    UpdateScoreText();
                 }
                 if (_snakePlayerController.IsDead)
                 {
@@ -81,9 +95,32 @@ namespace _02_Scripts
             }
         }
 
+        public void UpdateScoreText()
+        {
+            _scoreTextMeshPro.text = "SCORE: " + Mathf.Round(_playerScore);
+        }
+
         public void EatFood(int listFoodIndex)
         {
             if (listFoodIndex < 0 && listFoodIndex >= _listFood.Count) return;
+
+            _playerScore += baseScoreAtEat;
+
+            System.TimeSpan timeSpan = System.DateTime.UtcNow - _timeSinceEat;
+            float sumTime = timeSpan.Seconds + (timeSpan.Milliseconds / 1000f);
+
+            if (timeSpan.Seconds < timeMax)
+            {
+                _playerScore += timeScoreMax;
+            }else if (timeSpan.Seconds > timeMin)
+            {
+                _playerScore += timeScoreMin;
+            }
+            else
+            {
+                _playerScore += Mathf.Lerp(timeScoreMax, timeScoreMin, sumTime / timeMin);
+            }
+            UpdateScoreText();
 
             GameObject eatenFood = _listFood[listFoodIndex];
             _listFood.RemoveAt(listFoodIndex);
@@ -93,6 +130,8 @@ namespace _02_Scripts
             {
                 SpawnNewFood();
             }
+
+            _timeSinceEat = System.DateTime.UtcNow;
         }
 
         private void InitFoodList()
@@ -106,6 +145,7 @@ namespace _02_Scripts
         public void SpawnNewFood()
         {
             Vector3 newPos = GetRandomPointInRoom();
+            newPos += new Vector3(offsetX, offsetY, 0);
             
             GameObject newFood = Instantiate(snakeFoodPrefab, newPos, Quaternion.Euler(90f, 0f, 0f));
             _listFood.Add(newFood);
@@ -136,6 +176,9 @@ namespace _02_Scripts
             ClearFoodList();
             InitFoodList();
             _snakePlayerController.ResetSnake();
+            _playerScore = 0;
+            _timeSinceEat = System.DateTime.UtcNow;
+            UpdateScoreText();
         }
         
         private void OnDrawGizmos()
@@ -154,7 +197,7 @@ namespace _02_Scripts
                 float widthPos = -(roomWidthCol * cellSize / 2);
                 widthPos += i * cellSize;
 
-                Gizmos.DrawLine(new Vector3(widthPos, topPos), new Vector3(widthPos, bottomPos));
+                Gizmos.DrawLine(new Vector3(widthPos + offsetX, topPos + offsetY), new Vector3(widthPos + offsetX, bottomPos + offsetY));
             }
         
             float leftPos = -(roomWidthCol * cellSize / 2);
@@ -165,7 +208,7 @@ namespace _02_Scripts
                 float heightPos = -(roomHeightRow * cellSize / 2);
                 heightPos += i * cellSize;
             
-                Gizmos.DrawLine(new Vector3(leftPos, heightPos), new Vector3(rightPos, heightPos));
+                Gizmos.DrawLine(new Vector3(leftPos + offsetX, heightPos + offsetY), new Vector3(rightPos + offsetX, heightPos + offsetY));
             }
         }
     }

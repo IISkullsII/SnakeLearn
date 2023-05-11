@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace _02_Scripts
 {
@@ -41,11 +43,6 @@ namespace _02_Scripts
         private void Update()
         {
             ChangeDirection();
-
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                _snakeBody.AddBodyPart();
-            }
         }
 
         public void ResetSnake()
@@ -100,7 +97,7 @@ namespace _02_Scripts
                 {
                     _isDead = true;
                     _gameController.TriggerGameOver();
-                    yield return null;
+                    yield break;
                 }
 
                 int eatFood = CheckFoodCollision(nextPosition);
@@ -133,10 +130,10 @@ namespace _02_Scripts
 
         private bool CheckOutOfBounds(Vector3 nextPosition)
         {
-            if (nextPosition.x > (_gameController.RoomWidth / 2) || nextPosition.x < -(_gameController.RoomWidth / 2))
+            if (nextPosition.x > (_gameController.RoomWidth / 2) + _gameController.OffsetX || nextPosition.x < -(_gameController.RoomWidth / 2)  + _gameController.OffsetX)
                 return true;
 
-            if (nextPosition.y > (_gameController.RoomHeight / 2) || nextPosition.y < -(_gameController.RoomHeight / 2))
+            if (nextPosition.y > (_gameController.RoomHeight / 2) + _gameController.OffsetY || nextPosition.y < -(_gameController.RoomHeight / 2) + _gameController.OffsetY)
                 return true;
 
             return false;
@@ -201,7 +198,9 @@ namespace _02_Scripts
 
         public void AddBodyPart()
         {
+
             Vector3 lastBodyPartPosition = _bodyParts.Count > 0 ? _bodyParts[^1].Position : _snakeBodyParent.position;
+
             BodyPart newBodyPart = new(_bodyPartPrefab, lastBodyPartPosition);
             _bodyParts.Add(newBodyPart);
         }
@@ -239,11 +238,12 @@ namespace _02_Scripts
         }
         public BodyPart(GameObject bodyPartPrefab, Vector3 transformPos)
         {
-            this._bodyObject = Object.Instantiate(bodyPartPrefab, transformPos, Quaternion.identity);
+            _bodyObject = Object.Instantiate(bodyPartPrefab, transformPos, Quaternion.identity);
         }
 
         public void DestroyBodyPart()
         {
+            _bodyObject.transform.position = new Vector3(1000, 1000, 1000);
             Object.Destroy(_bodyObject);
         }
     }
