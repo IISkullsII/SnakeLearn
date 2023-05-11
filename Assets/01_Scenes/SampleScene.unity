@@ -975,12 +975,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   snakePlayer: {fileID: 1932535052}
   snakeFoodPrefab: {fileID: 276790952349347239, guid: 5420638c716eb5449b44128638bd89d3, type: 3}
-  roomWidthCol: 36
-  roomHeightRow: 18
+  roomWidthCol: 35
+  roomHeightRow: 17
   deadUIObject: {fileID: 522701071}
   cellSize: 0.5
   offsetX: 0
-  offsetY: -0.5
+  offsetY: -0.25
   borderSize: 0.25
   borderColor: {r: 1, g: 1, b: 1, a: 1}
   drawDebugGrid: 1
@@ -1027,7 +1027,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1769928322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1154,7 +1154,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1932535052}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.25, y: 0.25, z: 0}
+  m_LocalPosition: {x: 0, y: -0.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1189,8 +1189,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1941335747}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.0314, y: -0.4981, z: 0}
-  m_LocalScale: {x: 1.7769588, y: 1, z: 0.8996}
+  m_LocalPosition: {x: 0.0002, y: -0.2517, z: 0}
+  m_LocalScale: {x: 1.7544979, y: 1, z: 0.8543839}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1600944175}

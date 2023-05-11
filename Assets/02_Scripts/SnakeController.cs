@@ -48,7 +48,7 @@ namespace _02_Scripts
         public void ResetSnake()
         {
             _snakeBody.ResetBody(snakeBodyStart);
-            transform.position = new Vector3(_gameController.CellSize / 2, _gameController.CellSize / 2, 0);
+            transform.position = new Vector3(0, _gameController.CellSize / 2, 0);
             _isDead = false;
             StartCoroutine(MoveSnake());
         }
