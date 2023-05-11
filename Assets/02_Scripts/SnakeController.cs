@@ -30,13 +30,13 @@ namespace _02_Scripts
         private void Awake()
         {
             _gameController = gameControllerObject.GetComponent<GameController>();
-        
+            _snakeBody = new SnakeBody(snakeBodyPart, gameObject.transform, snakeBodyStart);
         }
 
     
         private void Start()
         {
-            _snakeBody = new SnakeBody(snakeBodyPart, gameObject.transform, snakeBodyStart);
+            
         }
     
     
@@ -141,6 +141,7 @@ namespace _02_Scripts
         
         private bool CheckSelfCollision(Vector3 nextPosition)
         {
+            
             for (int i = 0; i < _snakeBody.SnakeLength; i++)
             {
                 if (nextPosition == _snakeBody.BodyParts[i].Position) return true;
@@ -149,7 +150,17 @@ namespace _02_Scripts
             return false;
         }
 
+        public bool CheckIfSnakeCollision(Vector3 position, bool checkSnakeHead = false)
+        {
+            if (checkSnakeHead && transform.position.Equals(position)) return true;
+            for (int i = 0; i < Math.Max(_snakeBody.SnakeLength, 0); i++)
+            {
+                if (position == _snakeBody.BodyParts[i].Position) return true;
+            }
 
+            return false;
+        }
+        
         private int CheckFoodCollision(Vector3 nextPosition)
         {
             List<GameObject> listFood = _gameController.ListFood;

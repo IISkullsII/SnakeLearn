@@ -58,13 +58,13 @@ namespace _02_Scripts
 
         private void Awake()
         {
+            _snakePlayerController = snakePlayer.GetComponent<SnakeController>();
             _textFadeController = uiCanvas.GetComponentInChildren<TextFadeController>();
             _scoreTextMeshPro = scoreText.GetComponent<TextMeshProUGUI>();
         }
 
         private void Start()
         {
-            _snakePlayerController = snakePlayer.GetComponent<SnakeController>();
             InitFoodList();
             _playerScore = 0;
         }
@@ -163,11 +163,21 @@ namespace _02_Scripts
 
         private Vector3 GetRandomPointInRoom()
         {
-            Vector3 newPos = Vector3.zero;
-            newPos.x = Random.Range(0, roomWidthCol) * cellSize + (cellSize / 2) - (RoomWidth / 2);
-            newPos.y = Random.Range(0, roomHeightRow) * cellSize + (cellSize / 2) - (RoomHeight / 2);
+            while (true)
+            {
+                Vector3 newPos = Vector3.zero;
 
-            return newPos;
+                newPos.x = Random.Range(0, roomWidthCol) * cellSize + (cellSize / 2) - (RoomWidth / 2);
+                newPos.y = Random.Range(0, roomHeightRow) * cellSize + (cellSize / 2) - (RoomHeight / 2);
+                
+                if (_snakePlayerController.CheckIfSnakeCollision(newPos, true))
+                {
+                    continue;
+                }
+
+                return newPos;
+                break;
+            }
         }
 
         private void ResetGame()
